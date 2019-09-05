@@ -2,6 +2,7 @@ package com.example.gymworkouts;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -29,7 +30,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         workoutsET = findViewById(R.id.workouts_edit_text);
-        btn = findViewById(R.id.timer);
+        btn = (Button) findViewById(R.id.timer);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openTimer();
+            }
+        });
+
+
         addbtn = findViewById(R.id.add_btn);
         workoutList = findViewById(R.id.workout_list);
 
@@ -42,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         addbtn.setOnClickListener(this);
         workoutList.setOnItemClickListener(this);
     }
+
 
     @Override
     public void onClick(View view) {
@@ -64,5 +74,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         adapter.notifyDataSetChanged();
         FileHelper.writeData(workouts, this);
         Toast.makeText(this, "Delete", Toast.LENGTH_SHORT).show();
+    }
+
+    public void openTimer() {
+        Intent intent = new Intent(this, Timer.class);
+        startActivity(intent);
     }
 }
