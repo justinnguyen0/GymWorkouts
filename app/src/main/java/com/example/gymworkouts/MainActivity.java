@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,7 +13,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
     private EditText workoutsET;
     private Button btn;
@@ -32,7 +33,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         addbtn = findViewById(R.id.add_btn);
         workoutList = findViewById(R.id.workout_list);
 
+        workouts = FileHelper.readData(this);
+
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
+                workouts);
+        workoutList.setAdapter(adapter);
+
         addbtn.setOnClickListener(this);
+        workoutList.setOnItemClickListener(this);
     }
 
     @Override
@@ -43,8 +51,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 adapter.add(workoutEntered);
                 workoutsET.setText("");
 
+                FileHelper.writeData(workouts, this);
+
                 Toast.makeText( this, "Workout Added", Toast.LENGTH_SHORT).show();
                 break;
         }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        workouts.remove(position);
+        adapter.notifyDataSetChanged();
+        FileHelper.writeData(workouts, this);
+        Toast.makeText(this, "Delete", Toast.LENGTH_SHORT).show();
     }
 }
